@@ -6,9 +6,10 @@
     { "src": "back/*.py", "use": "@now/python" }
   ],
   "routes": [
-    { "src": "/api/(.*)", "dest": "/back/$1" },
-    { "src": "^/static/(.*)", "dest": "/static/$1" },
-    { "src": ".*", "dest": "/index.html" }
+    { "src": "/api", "dest": "/back/test.py" },
+    { "src": "^/static/(.*)", "dest": "/front/static/$1" },
+    { "src": ".*", "dest": "/front/index.html" }
   ],
-  "alias": ["next-train"]
+  "alias": ["next-train"],
+  "regions": ["bru1"]
 }
