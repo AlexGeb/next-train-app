@@ -1,0 +1,14 @@
+{
+  "version": 2,
+  "name": "next-train-monorepo",
+  "builds": [
+    { "src": "front/package.json", "use": "@now/static-build" },
+    { "src": "back/*.py", "use": "@now/python" }
+  ],
+  "routes": [
+    { "src": "/api/(.*)", "dest": "/back/$1" },
+    { "src": "^/static/(.*)", "dest": "/static/$1" },
+    { "src": ".*", "dest": "/index.html" }
+  ],
+  "alias": ["next-train"]
+}
