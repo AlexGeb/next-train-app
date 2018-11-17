@@ -2,11 +2,14 @@
   "version": 2,
   "name": "next-train-monorepo",
   "builds": [
-    { "src": "front/package.json", "use": "@now/static-build" },
-    { "src": "back/*.py", "use": "@now/python" }
+    { "src": "api/server.py", "use": "@now/python" },
+    { "src": "lambdas/*.py", "use": "@now/python" },
+    { "src": "front/package.json", "use": "@now/static-build" }
   ],
   "routes": [
-    { "src": "/api", "dest": "/back/test.py" },
+    { "src": "/api", "dest": "/api/server.py" },
+    { "src": "/lambdas", "dest": "/lambdas" },
+    { "src": "/lambdas/(.*)", "dest": "/lambdas/$1" },
     { "src": "^/static/(.*)", "dest": "/front/static/$1" },
     { "src": ".*", "dest": "/front/index.html" }
   ],
