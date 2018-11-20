@@ -2,17 +2,17 @@
   "version": 2,
   "name": "next-train-monorepo",
   "builds": [
-    { "src": "api/server.py", "use": "@now/python" },
-    { "src": "lambdas/*.py", "use": "@now/python" },
+    { "src": "back/api/*.py", "use": "@now/python" },
     { "src": "front/package.json", "use": "@now/static-build" }
   ],
   "routes": [
-    { "src": "/api", "dest": "/api/server.py" },
-    { "src": "/lambdas", "dest": "/lambdas" },
-    { "src": "/lambdas/(.*)", "dest": "/lambdas/$1" },
+    { "src": "/api/(.*)", "dest": "/back/api/$1" },
     { "src": "^/static/(.*)", "dest": "/front/static/$1" },
     { "src": ".*", "dest": "/front/index.html" }
   ],
   "alias": ["next-train"],
-  "regions": ["bru1"]
+  "regions": ["bru1"],
+  "env": {
+    "MONGODB_ADDON_URI": "@mongodb_addon_uri"
+  }
 }
