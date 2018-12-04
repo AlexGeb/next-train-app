@@ -22,10 +22,6 @@ const departures = [
   { depTime: '12h12', from: 'Paris', to: 'Lyon' },
 ];
 export class HomePage extends PureComponent<PropsType, StateType> {
-  componentDidMount() {
-    request('users').then(res => console.log(res));
-  }
-
   render() {
     return (
       <Layout>
