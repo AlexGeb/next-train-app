@@ -1,0 +1,107 @@
+{
+  "React Component": {
+    "prefix": "rcp",
+    "body": [
+      "// @flow",
+      "import React, { PureComponent } from 'react';",
+      "",
+      "type PropsType = {};",
+      "",
+      "type StateType = {};",
+      "",
+      "export class $1 extends PureComponent<PropsType, StateType> {",
+      "  render() {",
+      "    return $0;",
+      "  }",
+      "}",
+      "",
+      "export default $1;",
+      ""
+    ],
+    "description": "Generate a React component"
+  },
+  "React Container": {
+    "prefix": "rct",
+    "body": [
+      "// @flow",
+      "import { connect } from 'react-redux';",
+      "import { type StateType } from 'reducers';",
+      "import $1 from './$1';",
+      "",
+      "type MapStateToPropsType = {};",
+      "type MapDispatchToPropsType = {};",
+      "",
+      "export type ConnectPropsType = MapStateToPropsType & MapDispatchToPropsType;",
+      "",
+      "const mapStateToProps = (state: StateType): MapStateToPropsType => ({});",
+      "",
+      "const mapDispatchToProps: MapDispatchToPropsType = {};",
+      "",
+      "export default connect(",
+      "  mapStateToProps,",
+      "  mapDispatchToProps",
+      ")($1);",
+      ""
+    ],
+    "description": "Generate a React container"
+  },
+  "Redux reducer": {
+    "prefix": "rxrd",
+    "body": [
+      "// @flow",
+      "import type { $1ActionType } from './actions';",
+      "",
+      "export type $1StateType = {};",
+      "",
+      "const $2InitialState: $1StateType = {",
+      "  list: [],",
+      "};",
+      "",
+      "const $2Reducer = (state: $1StateType = $2InitialState, action: $1ActionType): $1StateType => {",
+      "  switch (action.type) {",
+      "    case '':",
+      "      return {",
+      "        ...state,",
+      "      };",
+      "  }",
+      "",
+      "  return state;",
+      "};",
+      "",
+      "export default $2Reducer;",
+      ""
+    ],
+    "description": "Generate a Redux reducer"
+  },
+  "Redux action creator": {
+    "prefix": "rxa",
+    "body": [
+      "export type $1ActionType = {|",
+      "  type: '$3',",
+      "  payload: {$0},",
+      "|};",
+      "",
+      "export const $1ActionCreator = (): $2ActionType => ({",
+      "  type: '$3',",
+      "  payload: {$0},",
+      "});",
+      ""
+    ],
+    "description": "Generate a Redux action creator"
+  },
+  "Add describe": {
+    "prefix": "describe",
+    "body": ["describe('${1}', () => {", "  $0", "});", ""],
+    "description": "Add describe around selection"
+  },
+  "Add it": {
+    "prefix": "it",
+    "body": ["it('${1}', () => {", "  $0", "});", ""],
+    "description": "Add it around selection"
+  },
+  "Index": {
+    "prefix": "index",
+    "body": ["// @flow", "", "export { default } from '$1';"],
+    "description": "Index file"
+  }
+}

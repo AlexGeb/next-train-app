@@ -1,26 +1,9 @@
-import React, { Component } from "react";
-import logo from "./logo.svg";
-import "./App.css";
+import React, { Component } from 'react';
+import HomePage from './pages/HomePage';
 
 class App extends Component {
-  state = {};
-
-  componentDidMount() {
-    fetch("/api/app.py")
-      .then(response => response.text())
-      .then(text => this.setState({ text }));
-  }
-
   render() {
-    const { text } = this.state;
-    return (
-      <div className="App">
-        <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <p>{text}</p>
-        </header>
-      </div>
-    );
+    return <HomePage />;
   }
 }
 
