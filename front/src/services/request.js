@@ -44,7 +44,10 @@ const checkStatus = response => {
 const request = (url, options) => {
   const baseApiPath = getApiBasePath();
 
-  return fetch(`${baseApiPath}${url}`, options)
+  return fetch(`${baseApiPath}${url}`, {
+    ...options,
+    headers: new Headers({ 'content-type': 'application/json' }),
+  })
     .then(checkStatus)
     .then(parseJSON);
 };

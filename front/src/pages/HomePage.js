@@ -9,28 +9,36 @@ const Layout = ({ children }) => <div>{children}</div>;
 const Header = ({ children }) => <div>{children}</div>;
 const Body = ({ children }) => <div>{children}</div>;
 const Autocomplete = () => <div>Autocomplete</div>;
-const DeparturesList = ({ departures }) => (
-  <ol>
-    {departures.map(({ depTime, from, to }) => (
-      <li>{`De ${from} à ${to} à ${depTime}`}</li>
-    ))}
-  </ol>
-);
 
-const departures = [
-  { depTime: '12h12', from: 'Paris', to: 'Lyon' },
-  { depTime: '12h12', from: 'Paris', to: 'Lyon' },
-];
 export class HomePage extends PureComponent<PropsType, StateType> {
+  state = {};
+
+  componentDidMount() {
+    this.fetchUsers();
+  }
+
+  fetchUsers = () => {
+    request('users').then(users => this.setState({ users: JSON.parse(users) }));
+  };
+
+  add = () => {
+    request('users', {
+      method: 'POST',
+      body: JSON.stringify({
+        name: 'Bob',
+      }),
+    }).then(users => this.fetchUsers());
+  };
+
   render() {
+    const { users } = this.state;
     return (
       <Layout>
         <Header>
           <Autocomplete />
         </Header>
-        <Body>
-          <DeparturesList departures={departures} />
-        </Body>
+        <Body>{users && users.map(user => user.name)}</Body>
+        <button onClick={this.add}>add</button>
       </Layout>
     );
   }
