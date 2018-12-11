@@ -5,8 +5,9 @@ from flask_restplus.reqparse import Argument
 from werkzeug.contrib.fixers import ProxyFix
 from bson.json_util import dumps
 
-from .parse_params import parse_params
-from .db import Db
+from utils.db import Db
+from utils.parse_params import parse_params
+
 
 app = Flask(__name__)
 CORS(app)
