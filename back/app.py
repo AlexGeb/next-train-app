@@ -25,13 +25,33 @@ app.register_blueprint(blueprint)
 @api.route('/users')
 class Users(Resource):
     def get(self):
-        return dumps(Db().getCollection('users').find({}, {'_id': 0}))
+        return dumps(Db().getCollection('users').find({}))
 
     @parse_params(Argument('name', required=True, location='json', type=str))
     def post(self, name):
         userCollection = Db().getCollection('users')
         user_id = userCollection.insert_one({'name': name}).inserted_id
-        return dumps(userCollection.find_one({'_id': user_id}, {'_id': 0}))
+        return dumps(userCollection.find_one({'_id': user_id}))
+
+    def delete(self):
+        Db().getCollection('users').delete_many({})
+        return dumps({'result': 'ok'})
+
+
+@api.route('/users/<int:user_id>')
+class User(Resource):
+    def get(self, user_id):
+        return dumps(Db().getCollection('users').find({'_id': user_id}))
+
+    @parse_params(Argument('name', required=True, location='json', type=str))
+    def post(self, user_id, name):
+        userCollection = Db().getCollection('users')
+        user_id = userCollection.insert_one({'name': name}).inserted_id
+        return dumps(userCollection.find_one({'_id': user_id}))
+
+    def delete(self, user_id):
+        Db().getCollection('users').delete_one({'_id': user_id})
+        return dumps({'result': 'ok'})
 
 
 if __name__ == '__main__':
