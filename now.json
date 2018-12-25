@@ -3,14 +3,13 @@
   "name": "next-train-monorepo",
   "builds": [
     {
-      "src": "back/*.py",
-      "use": "@liudonghua123/now-flask",
-      "config": { "maxLambdaSize": "50mb" }
+      "src": "back/*.js",
+      "use": "@now/node-server"
     },
     { "src": "front/package.json", "use": "@now/static-build" }
   ],
   "routes": [
-    { "src": "/api/.*", "dest": "/back/app.py" },
+    { "src": "/api/.*", "dest": "/back/app.js" },
     { "src": "^/static/(.*)", "dest": "/front/static/$1" },
     { "src": ".*", "dest": "/front/index.html" }
   ],
