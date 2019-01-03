@@ -2,7 +2,7 @@ import 'whatwg-fetch';
 
 const getApiBasePath = () =>
   process.env.NODE_ENV === 'development'
-    ? 'http://localhost:5000/api/'
+    ? 'http://localhost:8004/api/'
     : '/api/';
 
 const parseJSON = (response: any) => response.json();
@@ -12,18 +12,16 @@ const checkStatus = (response: any) => {
     return response;
   }
 
-  return (
-    response
-      .text()
-      .then((body: string) => (body ? JSON.parse(body) : {}))
-      .then((parsedBody: Object) => {
-        throw {
-          statusText: response.statusText,
-          status: response.status,
-          message: parsedBody
-        };
-      })
-  );
+  return response
+    .text()
+    .then((body: string) => (body ? JSON.parse(body) : {}))
+    .then((parsedBody: Object) => {
+      throw {
+        statusText: response.statusText,
+        status: response.status,
+        message: parsedBody,
+      };
+    });
 };
 
 const request = (url: string, options?: Object) => {

@@ -14,8 +14,8 @@ export class HomePage extends PureComponent {
   }
 
   fetchUsers = () => {
-    request('users').then((users: string) =>
-      this.setState({ users: JSON.parse(users) }),
+    request('users').then(
+      (users: string) => (console.log(users), this.setState({ users })),
     );
   };
 
