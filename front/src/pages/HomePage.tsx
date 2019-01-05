@@ -3,7 +3,7 @@ import request from '../services/request';
 
 interface User {
   name: string;
-  id: string;
+  _id: string;
 }
 
 export class HomePage extends PureComponent {
@@ -14,17 +14,17 @@ export class HomePage extends PureComponent {
   }
 
   fetchUsers = () => {
-    request('users').then(
-      (users: string) => (console.log(users), this.setState({ users })),
-    );
+    request('users').then((users: string) => this.setState({ users }));
   };
 
   add = () => {
     request('users', {
       method: 'POST',
-      body: JSON.stringify({
-        name: 'Bob',
-      }),
+      body: JSON.stringify([
+        {
+          name: 'Alex',
+        },
+      ]),
     }).then(users => this.fetchUsers());
   };
 
@@ -53,7 +53,7 @@ export class HomePage extends PureComponent {
         <p>
           {users &&
             users.map(user => (
-              <button key={user.id} onClick={this.delete(user.id)}>
+              <button key={user._id} onClick={this.delete(user._id)}>
                 {user.name}
               </button>
             ))}

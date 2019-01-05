@@ -1,32 +1,47 @@
 const { parse } = require("url");
 const { getDb } = require("../db");
+const { getJsonBody } = require("../requestHelper");
 
-const getUsers = (req, res) => {
-  const { query } = parse(req.url, true);
-  const { name } = query;
-  getDb(db => {
+const getUsers = async (req, res) => {
+  try {
+    const { query } = parse(req.url, true);
+    const { name } = query;
     const mongodbQuery = name ? { name } : {};
-    db.collection("users")
+    const db = await getDb();
+    const users = await db
+      .collection("users")
       .find(mongodbQuery)
-      .toArray((err, users) => {
-        if (err) throw err;
-        res.end(JSON.stringify(users));
-      });
-  });
+      .toArray();
+    res.end(JSON.stringify(users));
+  } catch (error) {
+    res.statusCode = 400;
+    res.end(JSON.stringify(error));
+  }
 };
 
-const postUser = (req, res) => {
-  const { query } = parse(req.url, true);
-  const { name } = query;
-  getDb(db => {
-    const mongodbQuery = name ? { name } : {};
-    db.collection("users")
-      .find(mongodbQuery)
-      .toArray((err, users) => {
-        if (err) throw err;
-        res.end(JSON.stringify(users));
-      });
-  });
+const postUsers = async (req, res) => {
+  try {
+    const body = await getJsonBody(req);
+    const db = await getDb();
+    const insertResult = await db.collection("users").insertMany(body);
+    res.end(JSON.stringify(insertResult));
+  } catch (error) {
+    console.error(error);
+    res.statusCode = 400;
+    res.end(JSON.stringify(error));
+  }
+};
+
+const deleteUsers = async (req, res) => {
+  try {
+    const db = await getDb();
+    const deleteResult = await db.collection("users").deleteMany();
+    res.end(JSON.stringify(deleteResult));
+  } catch (error) {
+    console.error(error);
+    res.statusCode = 400;
+    res.end(JSON.stringify(error));
+  }
 };
 
 module.exports = (req, res) => {
@@ -36,13 +51,14 @@ module.exports = (req, res) => {
       getUsers(req, res);
       break;
     case "POST":
-      postUser(req, res);
+      postUsers(req, res);
       break;
-    // case "DELETE":
-    //   deleteUser(req, res);
-    //   break;
+    case "DELETE":
+      deleteUsers(req, res);
+      break;
     default:
-      req.end();
+      res.statusCode = 405;
+      res.end();
       break;
   }
 };
