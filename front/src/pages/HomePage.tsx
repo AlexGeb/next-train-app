@@ -1,58 +1,29 @@
-import React, { PureComponent } from 'react';
-import request from '../services/request';
+import React, { Component } from 'react';
+import { observer, inject } from 'mobx-react';
 
-interface User {
-  name: string;
-  _id: string;
-}
+import { IUserStore, Status } from '../store/users';
 
-export class HomePage extends PureComponent {
-  state: { users?: Array<User> } = {};
-
-  componentDidMount() {
-    this.fetchUsers();
-  }
-
-  fetchUsers = () => {
-    request('users').then((users: string) => this.setState({ users }));
-  };
-
-  add = () => {
-    request('users', {
-      method: 'POST',
-      body: [{ name: 'Bob' }],
-    }).then(users => this.fetchUsers());
-  };
-
-  deleteAll = () => {
-    request('users', {
-      method: 'DELETE',
-    }).then(users => this.fetchUsers());
-  };
-
-  delete = (id: string) => () => {
-    request(`users/${id}`, {
-      method: 'DELETE',
-    }).then(users => this.fetchUsers());
-  };
-
+@inject((allStores: { userStore: IUserStore }) => allStores)
+@observer
+export class HomePage extends Component<{ userStore?: IUserStore }, any> {
   render() {
-    const { users } = this.state;
-    console.log(users);
+    const { userStore } = this.props;
+    if (!userStore) return null;
+    if (userStore.status === Status.PENDING) return <div>loading...</div>;
+    if (userStore.status === Status.ERROR) return <div>error</div>;
 
     return (
       <>
         <div>
-          <button onClick={this.add}>add</button>
-          <button onClick={this.deleteAll}>delete</button>
+          <button onClick={userStore.addUser}>add</button>
+          <button onClick={userStore.deleteAll}>delete</button>
         </div>
         <p>
-          {users &&
-            users.map(user => (
-              <button key={user._id} onClick={this.delete(user._id)}>
-                {user.name}
-              </button>
-            ))}
+          {userStore.users.map(user => (
+            <button key={user._id} onClick={userStore.deleteAll}>
+              {user.name}
+            </button>
+          ))}
         </p>
       </>
     );
