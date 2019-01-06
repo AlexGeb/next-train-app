@@ -15,7 +15,7 @@ const getUsers = async (req, res) => {
     res.end(JSON.stringify(users));
   } catch (error) {
     res.statusCode = 400;
-    res.end(JSON.stringify(error));
+    res.end(JSON.stringify({ error }));
   }
 };
 
