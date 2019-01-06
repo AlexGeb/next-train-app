@@ -6,8 +6,9 @@ import { getJsonBody } from "./utils/requestHelper";
 const getUsers = async (req, res) => {
   try {
     const { query } = parse(req.url, true);
-    const { name } = query;
-    const mongodbQuery = name ? { name } : {};
+    const { _id } = query;
+    const mongodbQuery =
+      typeof _id === "string" ? { _id: new ObjectID(_id) } : {};
     const db = await getDb();
     const users = await db
       .collection("users")
@@ -54,7 +55,7 @@ const deleteUsers = async (req, res) => {
   }
 };
 
-export default (req, res) => {
+module.exports = (req, res) => {
   const { method } = req;
   switch (method) {
     case "GET":
