@@ -20,11 +20,7 @@ export class HomePage extends PureComponent {
   add = () => {
     request('users', {
       method: 'POST',
-      body: JSON.stringify([
-        {
-          name: 'Bob',
-        },
-      ]),
+      body: [{ name: 'Bob' }],
     }).then(users => this.fetchUsers());
   };
 
