@@ -2,11 +2,11 @@
   "version": 2,
   "name": "next-train-monorepo",
   "builds": [
-    { "src": "back/api/*.ts", "use": "@now/node@canary" },
+    { "src": "back/api/*.js", "use": "@now/node" },
     { "src": "front/package.json", "use": "@now/static-build" }
   ],
   "routes": [
-    { "src": "/api/users", "dest": "/back/api/users.ts" },
+    { "src": "/api/users", "dest": "/back/api/users.js" },
     { "src": "^/static/(.*)", "dest": "/front/static/$1" },
     { "src": ".*", "dest": "/front/index.html" }
   ],
