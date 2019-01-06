@@ -1,4 +1,4 @@
-const getJsonBody = request => {
+export const getJsonBody = (request): Promise<any> => {
   return new Promise((resolve, reject) => {
     let body = "";
     request.on("data", chunk => {
@@ -16,8 +16,4 @@ const getJsonBody = request => {
       reject(err);
     });
   });
-};
-
-module.exports = {
-  getJsonBody
 };

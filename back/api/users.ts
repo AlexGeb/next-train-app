@@ -1,7 +1,7 @@
-const { parse } = require("url");
-const mongo = require("mongodb");
-const { getDb } = require("../db");
-const { getJsonBody } = require("../requestHelper");
+import { parse } from "url";
+import { ObjectID } from "mongodb";
+import { getDb } from "./utils/db";
+import { getJsonBody } from "./utils/requestHelper";
 
 const getUsers = async (req, res) => {
   try {
@@ -22,7 +22,7 @@ const getUsers = async (req, res) => {
 
 const postUsers = async (req, res) => {
   try {
-    const body = await getJsonBody(req);
+    const body: Object[] = await getJsonBody(req);
     const db = await getDb();
     const insertResult = await db.collection("users").insertMany(body);
     res.end(JSON.stringify(insertResult));
@@ -36,16 +36,15 @@ const postUsers = async (req, res) => {
 const deleteUsers = async (req, res) => {
   try {
     const db = await getDb();
-    const {
-      query: { _id }
-    } = parse(req.url, true);
+    const { query } = parse(req.url, true);
+    const { _id } = query;
     let deleteResult;
-    if (_id) {
+    if (typeof _id === "string") {
       deleteResult = await db
         .collection("users")
-        .deleteOne({ _id: new mongo.ObjectID(_id) });
+        .deleteOne({ _id: new ObjectID(_id) });
     } else {
-      deleteResult = await db.collection("users").deleteMany();
+      deleteResult = await db.collection("users").deleteMany({});
     }
     res.end(JSON.stringify(deleteResult));
   } catch (error) {
@@ -55,7 +54,7 @@ const deleteUsers = async (req, res) => {
   }
 };
 
-module.exports = (req, res) => {
+export default (req, res) => {
   const { method } = req;
   switch (method) {
     case "GET":
