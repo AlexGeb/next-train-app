@@ -11,6 +11,7 @@ export enum Status {
 export interface IUserStore {
   addUser: () => void;
   deleteAll: () => void;
+  deleteOne: (_id: string) => void;
   fetchUsers: () => void;
   status: Status;
   users: User[];
@@ -56,6 +57,20 @@ class UserStore implements IUserStore {
       this.status = Status.PENDING;
       try {
         yield request('users', {
+          method: 'DELETE',
+        });
+        yield this.fetchUsers();
+      } catch (error) {
+        this.status = Status.DONE;
+      }
+    }.bind(this),
+  );
+
+  deleteOne = flow(
+    function*(this: UserStore, _id: string) {
+      this.status = Status.PENDING;
+      try {
+        yield request(`users?_id=${_id}`, {
           method: 'DELETE',
         });
         yield this.fetchUsers();

@@ -1,4 +1,5 @@
 const { parse } = require("url");
+const mongo = require("mongodb");
 const { getDb } = require("../db");
 const { getJsonBody } = require("../requestHelper");
 
@@ -35,7 +36,17 @@ const postUsers = async (req, res) => {
 const deleteUsers = async (req, res) => {
   try {
     const db = await getDb();
-    const deleteResult = await db.collection("users").deleteMany();
+    const {
+      query: { _id }
+    } = parse(req.url, true);
+    let deleteResult;
+    if (_id) {
+      deleteResult = await db
+        .collection("users")
+        .deleteOne({ _id: new mongo.ObjectID(_id) });
+    } else {
+      deleteResult = await db.collection("users").deleteMany();
+    }
     res.end(JSON.stringify(deleteResult));
   } catch (error) {
     console.error(error);

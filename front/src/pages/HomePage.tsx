@@ -20,7 +20,10 @@ export class HomePage extends Component<{ userStore?: IUserStore }, any> {
         </div>
         <p>
           {userStore.users.map(user => (
-            <button key={user._id} onClick={userStore.deleteAll}>
+            <button
+              key={user._id}
+              onClick={() => userStore.deleteOne(user._id)}
+            >
               {user.name}
             </button>
           ))}
