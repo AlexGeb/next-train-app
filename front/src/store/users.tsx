@@ -17,7 +17,7 @@ export interface IUserStore {
   users: User[];
 }
 
-class UserStore implements IUserStore {
+export class UserStore implements IUserStore {
   @observable users: User[] = [];
   @observable status: Status = Status.PENDING;
 
@@ -80,5 +80,3 @@ class UserStore implements IUserStore {
     }.bind(this),
   );
 }
-
-export const userStore = new UserStore();
