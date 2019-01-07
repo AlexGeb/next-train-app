@@ -7,6 +7,7 @@
     "mobx": "^5.8.0",
     "mobx-react": "^5.4.3",
     "react": "^16.6.3",
+    "react-autocomplete": "^1.8.1",
     "react-dom": "^16.6.3",
     "react-scripts": "2.1.2",
     "styled-components": "^4.1.2"
@@ -33,6 +34,7 @@
     "@types/jest": "^23.3.11",
     "@types/node": "^10.12.15",
     "@types/react": "^16.7.17",
+    "@types/react-autocomplete": "^1.8.4",
     "@types/react-dom": "^16.0.11",
     "typescript": "^3.2.2"
   },

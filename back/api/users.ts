@@ -56,6 +56,7 @@ const deleteUsers = async (req, res) => {
 };
 
 module.exports = (req, res) => {
+  res.setHeader("Content-Type", "application/json");
   const { method } = req;
   switch (method) {
     case "GET":
