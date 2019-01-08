@@ -1,25 +1,25 @@
 import React, { Component } from 'react';
 import Autocomplete from 'react-autocomplete';
 import { observer, inject } from 'mobx-react';
+import { DepartureStore } from '../store/departureStore';
 
 @inject((rootStore: IRootStore) => ({
   searchStationStore: rootStore.searchStationStore,
+  departureStore: rootStore.departureStore,
 }))
 @observer
 export class SearchStations extends Component<
-  { searchStationStore?: ISearchStationStore },
+  {
+    searchStationStore?: ISearchStationStore;
+    departureStore?: IDepartureStore;
+  },
   any
 > {
   render() {
-    const { searchStationStore } = this.props;
-    if (!searchStationStore) return null;
-    const {
-      results,
-      query,
-      search,
-      select,
-      selectedResult,
-    } = searchStationStore;
+    const { searchStationStore, departureStore } = this.props;
+    if (!searchStationStore || !departureStore) return null;
+    const { results, query, search } = searchStationStore;
+    const { select, stationId } = departureStore;
     return (
       <>
         <Autocomplete
@@ -37,7 +37,7 @@ export class SearchStations extends Component<
           onChange={e => search(e.target.value)}
           onSelect={(value, item: ISearchResult) => select(item)}
         />
-        {JSON.stringify(selectedResult)}
+        {JSON.stringify(stationId)}
       </>
     );
   }

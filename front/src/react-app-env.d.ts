@@ -28,14 +28,19 @@ interface ISearchResult {
 
 interface ISearchStationStore {
   search: (query: string) => void;
-  select: (value: any) => void;
   status: StatusType;
   results: ISearchResult[];
   query: string;
-  selectedResult: ISearchResult | null;
+}
+
+interface IDepartureStore {
+  stationId: string;
+  select: (value: any) => void;
+  fetchDepartures: (stationId: string) => void;
 }
 
 interface IRootStore {
   userStore: IUserStore;
   searchStationStore: ISearchStationStore;
+  departureStore: IDepartureStore;
 }

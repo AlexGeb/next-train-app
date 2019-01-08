@@ -1,4 +1,4 @@
-import { observable, flow, action } from 'mobx';
+import { observable, flow, action, autorun } from 'mobx';
 
 import { Status } from '../enums';
 import request from '../services/request';
@@ -7,7 +7,6 @@ export class SearchStationStore implements ISearchStationStore {
   @observable results: ISearchResult[] = [];
   @observable query: string = '';
   @observable status: StatusType = Status.PENDING;
-  @observable selectedResult: ISearchResult | null = null;
 
   constructor(rootStore: IRootStore) {}
 
@@ -26,7 +25,4 @@ export class SearchStationStore implements ISearchStationStore {
       }
     }.bind(this),
   );
-
-  @action select = (selectedResult: ISearchResult) =>
-    (this.selectedResult = selectedResult);
 }
