@@ -24,7 +24,7 @@ export class SearchStations extends Component<
       <>
         <Autocomplete
           getItemValue={item => item.name}
-          items={results}
+          items={results.length > 0 ? results : []}
           renderItem={(item: ISearchResult, isHighlighted) => (
             <div
               key={item.externalCode}

@@ -7,11 +7,6 @@ import SearchStations from '../components/SearchStations';
 @inject((rootStore: IRootStore) => ({ userStore: rootStore.userStore }))
 @observer
 export class HomePage extends Component<{ userStore?: IUserStore }, any> {
-  constructor(props: any) {
-    super(props);
-    console.log(props);
-  }
-
   render() {
     const { userStore } = this.props;
     if (!userStore) return null;
