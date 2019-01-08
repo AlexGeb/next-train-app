@@ -2,8 +2,9 @@ import React, { Component } from 'react';
 import Autocomplete from 'react-autocomplete';
 import { observer, inject } from 'mobx-react';
 
-import { ISearchStationStore, ISearchResult } from '../store/searchStation';
-
+@inject((rootStore: IRootStore) => ({
+  searchStationStore: rootStore.searchStationStore,
+}))
 @observer
 export class SearchStations extends Component<
   { searchStationStore?: ISearchStationStore },

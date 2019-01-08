@@ -1,27 +1,13 @@
 import { observable, flow, action } from 'mobx';
 
+import { Status } from '../enums';
 import request from '../services/request';
-
-export enum Status {
-  PENDING,
-  DONE,
-  ERROR,
-}
-
-export interface IUserStore {
-  addUser: () => void;
-  deleteAll: () => void;
-  deleteOne: (_id: string) => void;
-  fetchUsers: () => void;
-  status: Status;
-  users: User[];
-}
 
 export class UserStore implements IUserStore {
   @observable users: User[] = [];
-  @observable status: Status = Status.PENDING;
+  @observable status: StatusType = Status.PENDING;
 
-  constructor() {
+  constructor(rootStore: IRootStore) {
     this.fetchUsers();
   }
 

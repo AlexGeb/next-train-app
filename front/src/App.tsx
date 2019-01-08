@@ -3,16 +3,18 @@ import { Provider } from 'mobx-react';
 import { configure } from 'mobx';
 import { globalStyle, createGlobalStyle } from '@smooth-ui/core-sc';
 
-import { allStores } from './stores';
+import { RootStore } from './store/rootStore';
 import HomePage from './pages/HomePage';
 
 configure({ enforceActions: 'observed' });
 const GlobalStyle = createGlobalStyle`${globalStyle()}`;
 
+const rootStore = new RootStore();
+
 class App extends Component {
   render() {
     return (
-      <Provider {...allStores}>
+      <Provider {...rootStore}>
         <>
           <GlobalStyle />
           <HomePage />

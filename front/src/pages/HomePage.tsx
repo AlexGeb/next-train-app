@@ -1,16 +1,17 @@
 import React, { Component } from 'react';
 import { observer, inject } from 'mobx-react';
 
+import { Status } from '../enums';
 import SearchStations from '../components/SearchStations';
-import { IUserStore, Status } from '../store/users';
-import { ISearchStationStore } from '../store/searchStation';
 
-@inject('userStore', 'searchStationStore')
+@inject((rootStore: IRootStore) => ({ userStore: rootStore.userStore }))
 @observer
-export class HomePage extends Component<
-  { userStore?: IUserStore; searchStationStore?: ISearchStationStore },
-  any
-> {
+export class HomePage extends Component<{ userStore?: IUserStore }, any> {
+  constructor(props: any) {
+    super(props);
+    console.log(props);
+  }
+
   render() {
     const { userStore } = this.props;
     if (!userStore) return null;
@@ -22,7 +23,7 @@ export class HomePage extends Component<
         <div>
           <button onClick={userStore.addUser}>add</button>
           <button onClick={userStore.deleteAll}>delete</button>
-          <SearchStations searchStationStore={this.props.searchStationStore} />
+          <SearchStations />
         </div>
         <p>
           {userStore.users.map(user => (
