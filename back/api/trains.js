@@ -15,7 +15,13 @@ const searchStation = (req, res) => __awaiter(this, void 0, void 0, function* ()
     const { q } = query;
     let searchResults = [];
     if (typeof q === "string") {
-        searchResults = yield sncf_1.getPossibleItems(q);
+        try {
+            searchResults = yield sncf_1.getPossibleItems(q);
+        }
+        catch (error) {
+            res.end(JSON.stringify(error));
+            return;
+        }
     }
     const searchResultsForFront = searchResults.map(result => ({
         name: result.name,

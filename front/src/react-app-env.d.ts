@@ -31,6 +31,7 @@ interface ISearchStationStore {
   status: StatusType;
   results: ISearchResult[];
   query: string;
+  error: string;
 }
 
 interface IDepartureStore {

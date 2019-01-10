@@ -12,7 +12,12 @@ const searchStation = async (req, res) => {
   const { q } = query;
   let searchResults: IResult[] = [];
   if (typeof q === "string") {
-    searchResults = await getPossibleItems(q);
+    try {
+      searchResults = await getPossibleItems(q);
+    } catch (error) {
+      res.end(JSON.stringify(error));
+      return;
+    }
   }
   const searchResultsForFront: ISearchResult[] = searchResults.map(result => ({
     name: result.name,

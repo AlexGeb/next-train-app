@@ -1,38 +1,19 @@
-import React, { Component } from 'react';
-import { observer, inject } from 'mobx-react';
+import React from 'react';
+import { Box } from '@smooth-ui/core-sc';
+import { SearchStations } from '../components/SearchStations';
 
-import { Status } from '../enums';
-import SearchStations from '../components/SearchStations';
-
-@inject((rootStore: IRootStore) => ({ userStore: rootStore.userStore }))
-@observer
-export class HomePage extends Component<{ userStore?: IUserStore }, any> {
-  render() {
-    const { userStore } = this.props;
-    if (!userStore) return null;
-    if (userStore.status === Status.PENDING) return <div>loading...</div>;
-    if (userStore.status === Status.ERROR) return <div>error</div>;
-
-    return (
-      <>
-        <div>
-          <button onClick={userStore.addUser}>add</button>
-          <button onClick={userStore.deleteAll}>delete</button>
-          <SearchStations />
-        </div>
-        <p>
-          {userStore.users.map(user => (
-            <button
-              key={user._id}
-              onClick={() => userStore.deleteOne(user._id)}
-            >
-              {user.name}
-            </button>
-          ))}
-        </p>
-      </>
-    );
-  }
-}
+const HomePage = () => (
+  <Box>
+    <Box
+      display="flex"
+      justifyContent="space-between"
+      p={10}
+      backgroundColor="rgb(238, 241, 245)"
+    >
+      <SearchStations />
+    </Box>
+    <Box p={10}>List of next departures</Box>
+  </Box>
+);
 
 export default HomePage;

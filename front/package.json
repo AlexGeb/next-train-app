@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "@smooth-ui/core-sc": "^7.0.5",
+    "@smooth-ui/core-sc": "^7.1.0",
     "mobx": "^5.8.0",
     "mobx-react": "^5.4.3",
     "react": "^16.6.3",

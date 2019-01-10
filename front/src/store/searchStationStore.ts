@@ -1,4 +1,4 @@
-import { observable, flow, action, autorun } from 'mobx';
+import { observable, flow } from 'mobx';
 
 import { Status } from '../enums';
 import request from '../services/request';
@@ -6,14 +6,16 @@ import request from '../services/request';
 export class SearchStationStore implements ISearchStationStore {
   @observable results: ISearchResult[] = [];
   @observable query: string = '';
-  @observable status: StatusType = Status.PENDING;
+  @observable status: StatusType = Status.DONE;
+  @observable error: string = '';
 
   constructor(rootStore: IRootStore) {}
 
   search = flow(
     function*(this: SearchStationStore, query: string) {
-      this.status = Status.PENDING;
       this.query = query;
+      if (query.length < 3) return;
+      this.status = Status.PENDING;
       try {
         const results = yield request(`trains?q=${query}`, {
           method: 'GET',
@@ -21,7 +23,8 @@ export class SearchStationStore implements ISearchStationStore {
         this.results = results;
         this.status = Status.DONE;
       } catch (error) {
-        this.status = Status.DONE;
+        this.status = Status.ERROR;
+        this.error = 'Oups ! An error occured..';
       }
     }.bind(this),
   );

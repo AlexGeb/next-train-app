@@ -1000,10 +1000,10 @@
   dependencies:
     ramda "^0.26.0"
 
-"@smooth-ui/core-sc@^7.0.5":
-  version "7.0.5"
-  resolved "https://registry.yarnpkg.com/@smooth-ui/core-sc/-/core-sc-7.0.5.tgz#b103366fe74c8e603ee154eac4af998fbc1e69bc"
-  integrity sha512-NKRclxkHIdv4yumOVA/DzB9pgtDGtWDcyg89zbn2WKZJxjQ4lstDMuU2RhUxyg915YoJEoxbkW64ynPixu6b8g==
+"@smooth-ui/core-sc@^7.1.0":
+  version "7.1.0"
+  resolved "https://registry.yarnpkg.com/@smooth-ui/core-sc/-/core-sc-7.1.0.tgz#47998d19e4b49964f3087d90a4c90c96a2e0284b"
+  integrity sha512-V2lo0cDxHpNrVBRwdlm7Rao6pZqYhd2zFIcXZILKVy+k4qu/0Rdxg8Yr1ShTFlhocA24RxDqcuSG7+ymBHuLGA==
   dependencies:
     polished "^2.3.0"
     prop-types "^15.6.2"

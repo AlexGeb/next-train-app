@@ -16,5 +16,5 @@
     "jsx": "preserve",
     "lib": ["dom", "dom.iterable", "esnext"]
   },
-  "include": ["src", "types"]
+  "include": ["src", "types", "dist"]
 }
