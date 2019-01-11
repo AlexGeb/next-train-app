@@ -1,18 +1,23 @@
 import React from 'react';
 import { Box } from '@smooth-ui/core-sc';
+
+import { styles } from '../styles';
 import { SearchStations } from '../components/SearchStations';
+import { DepartureList } from '../components/DepartureList';
 
 const HomePage = () => (
-  <Box>
+  <Box height="100vh" backgroundColor="rgb(238, 241, 245)">
     <Box
+      alignItems="center"
       display="flex"
-      justifyContent="space-between"
-      p={10}
-      backgroundColor="rgb(238, 241, 245)"
+      height={50}
+      p={`0px ${styles.sidePadding}px`}
     >
       <SearchStations />
     </Box>
-    <Box p={10}>List of next departures</Box>
+    <Box>
+      <DepartureList />
+    </Box>
   </Box>
 );
 

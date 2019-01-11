@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
-import Autocomplete from 'react-autocomplete';
 import { observer, inject } from 'mobx-react';
+import Autocomplete from 'react-autocomplete';
+
 import { Status } from '../enums';
 
 type PropsType = {
