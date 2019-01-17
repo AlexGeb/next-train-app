@@ -6,7 +6,7 @@ import { styles } from '../styles';
 const Row = styled.div`
   align-items: center;
   background-color: ${({ index }: { index: number }) =>
-    index % 2 ? '#043a6b' : '#0c5da5'}
+    index % 2 ? '#043a6b' : '#0c5da5'};
   color: white;
   display: flex;
   height: 70px;
@@ -14,8 +14,7 @@ const Row = styled.div`
   width: 100%;
 `;
 const HeadSign = styled.div`
-  ${props => `color:#${props.color};`};
-  font-weight: bold;
+  ${props => `color: ${props.color}`};
   width: 5em;
 `;
 const Time = styled.div`

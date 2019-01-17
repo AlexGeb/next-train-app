@@ -3,13 +3,15 @@
   "name": "next-train-monorepo",
   "builds": [
     { "src": "back/api/*.js", "use": "@now/node" },
-    { "src": "front/package.json", "use": "@now/static-build" }
+    { "src": "front/package.json", "use": "@now/static-build" },
+    { "src": "front/public/img/*", "use": "@now/static" }
   ],
   "routes": [
     { "src": "/api/users", "dest": "/back/api/users.js" },
     { "src": "/api/trains", "dest": "/back/api/trains.js" },
     { "src": "^/static/(.*)", "dest": "/front/static/$1" },
-    { "src": ".*", "dest": "/front/index.html" }
+    { "src": ".*", "dest": "/front/index.html" },
+    { "src": "/img/(.*)", "dest": "/front/public/img/$1" }
   ],
   "alias": ["next-train"],
   "regions": ["bru1"],
