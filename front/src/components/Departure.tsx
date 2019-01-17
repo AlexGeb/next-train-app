@@ -1,5 +1,5 @@
 import React from 'react';
-import styled from 'styled-components';
+import { styled } from '@smooth-ui/core-sc';
 
 import { styles } from '../styles';
 
@@ -14,7 +14,8 @@ const Row = styled.div`
   width: 100%;
 `;
 const HeadSign = styled.div`
-  ${props => `color:${props.color};`};
+  ${props => `color:#${props.color};`};
+  font-weight: bold;
   width: 5em;
 `;
 const Time = styled.div`

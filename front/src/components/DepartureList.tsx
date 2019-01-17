@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { observer, inject } from 'mobx-react';
-import styled from 'styled-components';
+import { styled } from '@smooth-ui/core-sc';
 
 import { Departure } from './Departure';
 import { Status } from '../enums';
@@ -19,21 +19,22 @@ const ListWrapper = styled.div`
 }))
 @observer
 export class DepartureList extends Component<PropsType> {
+  componentDidMount() {
+    const { departureStore } = this.props;
+    if (!departureStore) return;
+    departureStore.fetchDepartures('stop_area:OIF:SA:8739300');
+  }
   render() {
     const { departureStore } = this.props;
     if (!departureStore) return null;
-    const { departures, status } = departureStore;
+    const { departuresForUi, status } = departureStore;
     if (status === Status.PENDING) {
       return <div>loading..</div>;
     }
     return (
       <ListWrapper>
-        {departures.map((departure, index) => (
-          <Departure
-            key={departure.stopDateTime.departureDateTime}
-            index={index}
-            departure={departure}
-          />
+        {departuresForUi.map((departure, index) => (
+          <Departure key={index} index={index} departure={departure} />
         ))}
       </ListWrapper>
     );

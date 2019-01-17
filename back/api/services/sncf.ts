@@ -11,42 +11,9 @@ const handleResponse = (resp: superagent.Response): any => {
   return resp.body;
 };
 
-interface IMode {
+interface IResult {
   id: string;
   name: string;
-}
-
-interface ICoord {
-  lat: string;
-  lon: string;
-}
-
-interface ICode {
-  type: string;
-  value: string;
-}
-
-interface IAdministrativeRegion {
-  insee: string;
-  name: string;
-  level: 8;
-  coord: { lat: string; lon: string };
-  label: string;
-  id: string;
-  zip_code: string;
-}
-
-export interface IResult {
-  comment: string;
-  commercial_modes: IMode[];
-  name: string;
-  physical_modes: IMode[];
-  coord: ICoord;
-  label: string;
-  codes: ICode[];
-  administrative_regions: IAdministrativeRegion[];
-  timezone: string;
-  id: string;
 }
 
 export const getPossibleItems = (partialValue: string): Promise<IResult[]> => {
@@ -56,28 +23,35 @@ export const getPossibleItems = (partialValue: string): Promise<IResult[]> => {
     )
     .set(headers)
     .then(handleResponse)
-    .then(items => items.places.map(p => p.stop_area));
+    .then(items => items.places.map(p => ({ id: p.id, name: p.name })));
 };
 
-export const getNextDepartures = (stop_area_id: string): Promise<any> => {
-  const forbiddenUris =
-    "forbidden_uris[]=" +
-    ["physical_mode:Bus", "physical_mode:Metro"].join("&forbidden_uris[]=");
+export const getNextDepartures = (stopAreaId: string): Promise<any> => {
+  const forbiddenUris = `forbidden_uris[]=${[
+    "physical_mode:Bus",
+    "physical_mode:Metro"
+  ].join("&forbidden_uris[]=")}`;
 
   return superagent
     .get(
-      `${ENPOINT}/stop_areas/${stop_area_id}/departures?data_freshness=realtime&disable_geojson=true&${forbiddenUris}`
+      `${ENPOINT}/stop_areas/${stopAreaId}/departures?data_freshness=realtime&disable_geojson=true&${forbiddenUris}`
     )
     .set(headers)
     .then(handleResponse)
-    .then(resp => {
-      return resp.departures;
-    });
+    .then(resp =>
+      resp.departures.map(depart => ({
+        displayInformations: depart.display_informations,
+        stopDateTime: {
+          ...depart.stop_date_time,
+          departureDateTime: depart.stop_date_time.departure_date_time
+        }
+      }))
+    );
 };
 
-export const getStopAreaInfo = (stop_area_id: string): Promise<any> => {
+export const getStopAreaInfo = (stopAreaId: string): Promise<any> => {
   return superagent
-    .get(`${ENPOINT}/stop_areas/${stop_area_id}`)
+    .get(`${ENPOINT}/stop_areas/${stopAreaId}`)
     .set(headers)
     .then(handleResponse)
     .then(resp => resp.stop_areas[0]);

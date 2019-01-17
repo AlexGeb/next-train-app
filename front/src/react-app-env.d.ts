@@ -22,7 +22,7 @@ interface IUserStore {
   users: User[];
 }
 interface ISearchResult {
-  externalCode: string;
+  id: string;
   name: string;
 }
 
@@ -48,6 +48,7 @@ interface ISearchStationStore {
 
 interface IDepartureStore {
   departures: IDeparture[];
+  departuresForUi: IDeparture[];
   stationId: string;
   status: StatusType;
   select: (value: any) => void;

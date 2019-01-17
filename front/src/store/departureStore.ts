@@ -1,5 +1,7 @@
-import { observable, action } from 'mobx';
+import { observable, action, flow, toJS, computed } from 'mobx';
+import moment from 'moment';
 
+import request from '../services/request';
 import { Status } from '../enums';
 
 const departures: IDeparture[] = [
@@ -11,7 +13,7 @@ const departures: IDeparture[] = [
       headsign: 'TUC',
     },
     stopDateTime: {
-      departureDateTime: '10:23',
+      departureDateTime: '20190112T201600',
     },
   },
   {
@@ -22,7 +24,7 @@ const departures: IDeparture[] = [
       headsign: 'POLO',
     },
     stopDateTime: {
-      departureDateTime: '10:30',
+      departureDateTime: '20190112T201600',
     },
   },
 ];
@@ -32,20 +34,39 @@ export class DepartureStore implements IDepartureStore {
   @observable selectedResult?: ISearchResult;
   @observable departures: IDeparture[] = departures;
   @observable status = Status.DONE;
+  @observable error: string | null = null;
 
   constructor(rootStore: IRootStore) {}
 
-  @action fetchDepartures = (stationId: string) => {
-    this.stationId = stationId;
-    this.status = Status.PENDING;
-    setTimeout(() => {
-      this.status = Status.DONE;
-      this.departures = departures;
-    }, 2000);
-  };
+  fetchDepartures = flow(
+    function*(this: DepartureStore, stopAreaId: string) {
+      this.status = Status.PENDING;
+      try {
+        const departures = yield request(`trains?stopAreaId=${stopAreaId}`, {
+          method: 'GET',
+        });
+        this.departures = departures;
+        this.status = Status.DONE;
+      } catch (error) {
+        this.status = Status.ERROR;
+        this.error = 'Oups ! An error occured..';
+      }
+    }.bind(this),
+  );
 
   @action select = (selectedResult: ISearchResult) => {
     this.selectedResult = selectedResult;
-    this.fetchDepartures(this.selectedResult.externalCode);
+    this.fetchDepartures(this.selectedResult.id);
   };
+
+  @computed get departuresForUi() {
+    return this.departures.map(depart => ({
+      ...depart,
+      stopDateTime: {
+        departureDateTime: moment(depart.stopDateTime.departureDateTime).format(
+          'LT',
+        ),
+      },
+    }));
+  }
 }

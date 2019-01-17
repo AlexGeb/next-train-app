@@ -1,30 +1,34 @@
 import { parse } from "url";
 import * as http from "http";
-import { getPossibleItems, IResult } from "./services/sncf";
-
-interface ISearchResult {
-  name: string;
-  externalCode: string;
-}
+import { getPossibleItems, getNextDepartures } from "./services/sncf";
 
 const searchStation = async (req, res) => {
   const { query } = parse(req.url, true);
-  const { q } = query;
-  let searchResults: IResult[] = [];
+  const { q, stopAreaId } = query;
   if (typeof q === "string") {
     try {
-      searchResults = await getPossibleItems(q);
+      const searchResults = await getPossibleItems(q);
+      res.end(JSON.stringify(searchResults));
+      return;
     } catch (error) {
+      res.statusCode = 400;
       res.end(JSON.stringify(error));
       return;
     }
+  } else if (typeof stopAreaId === "string") {
+    try {
+      const departures = await getNextDepartures(stopAreaId);
+      res.end(JSON.stringify(departures));
+    } catch (error) {
+      res.statusCode = 400;
+      res.end(JSON.stringify(error));
+      return;
+    }
+  } else {
+    res.statusCode = 400;
+    res.end(JSON.stringify({ error: "No query or stop area id specified" }));
+    return;
   }
-  const searchResultsForFront: ISearchResult[] = searchResults.map(result => ({
-    name: result.name,
-    externalCode: result.codes.find(code => code.type === "external_code").value
-  }));
-
-  res.end(JSON.stringify(searchResultsForFront));
 };
 
 module.exports = async (req, res) => {

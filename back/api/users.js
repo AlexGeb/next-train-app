@@ -37,7 +37,6 @@ const postUsers = (req, res) => __awaiter(this, void 0, void 0, function* () {
         res.end(JSON.stringify(insertResult));
     }
     catch (error) {
-        console.error(error);
         res.statusCode = 400;
         res.end(JSON.stringify(error));
     }
@@ -59,7 +58,6 @@ const deleteUsers = (req, res) => __awaiter(this, void 0, void 0, function* () {
         res.end(JSON.stringify(deleteResult));
     }
     catch (error) {
-        console.error(error);
         res.statusCode = 400;
         res.end(JSON.stringify(error));
     }
