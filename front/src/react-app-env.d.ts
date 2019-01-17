@@ -22,26 +22,41 @@ interface IUserStore {
   users: User[];
 }
 interface ISearchResult {
+  id: string;
   name: string;
-  externalCode: string;
+}
+
+interface IDeparture {
+  displayInformations: {
+    color: string;
+    direction: string;
+    headsign: string;
+    label: string;
+  };
+  stopDateTime: {
+    departureDateTime: string;
+  };
 }
 
 interface ISearchStationStore {
+  error: string;
+  query: string;
+  results: ISearchResult[];
   search: (query: string) => void;
   status: StatusType;
-  results: ISearchResult[];
-  query: string;
-  error: string;
 }
 
 interface IDepartureStore {
+  departures: IDeparture[];
+  departuresForUi: IDeparture[];
   stationId: string;
+  status: StatusType;
   select: (value: any) => void;
   fetchDepartures: (stationId: string) => void;
 }
 
 interface IRootStore {
-  userStore: IUserStore;
-  searchStationStore: ISearchStationStore;
   departureStore: IDepartureStore;
+  searchStationStore: ISearchStationStore;
+  userStore: IUserStore;
 }

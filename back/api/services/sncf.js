@@ -15,22 +15,25 @@ exports.getPossibleItems = (partialValue) => {
         .get(`${ENPOINT}/places?q=${partialValue}&type[]=stop_area&disable_geojson=true`)
         .set(headers)
         .then(handleResponse)
-        .then(items => items.places.map(p => p.stop_area));
+        .then(items => items.places.map(p => ({ id: p.id, name: p.name })));
 };
-exports.getNextDepartures = (stop_area_id) => {
-    const forbiddenUris = "forbidden_uris[]=" +
-        ["physical_mode:Bus", "physical_mode:Metro"].join("&forbidden_uris[]=");
+exports.getNextDepartures = (stopAreaId) => {
+    const forbiddenUris = `forbidden_uris[]=${[
+        "physical_mode:Bus",
+        "physical_mode:Metro"
+    ].join("&forbidden_uris[]=")}`;
     return superagent
-        .get(`${ENPOINT}/stop_areas/${stop_area_id}/departures?data_freshness=realtime&disable_geojson=true&${forbiddenUris}`)
+        .get(`${ENPOINT}/stop_areas/${stopAreaId}/departures?data_freshness=realtime&disable_geojson=true&${forbiddenUris}`)
         .set(headers)
         .then(handleResponse)
-        .then(resp => {
-        return resp.departures;
-    });
+        .then(resp => resp.departures.map(depart => ({
+        displayInformations: depart.display_informations,
+        stopDateTime: Object.assign({}, depart.stop_date_time, { departureDateTime: depart.stop_date_time.departure_date_time })
+    })));
 };
-exports.getStopAreaInfo = (stop_area_id) => {
+exports.getStopAreaInfo = (stopAreaId) => {
     return superagent
-        .get(`${ENPOINT}/stop_areas/${stop_area_id}`)
+        .get(`${ENPOINT}/stop_areas/${stopAreaId}`)
         .set(headers)
         .then(handleResponse)
         .then(resp => resp.stop_areas[0]);

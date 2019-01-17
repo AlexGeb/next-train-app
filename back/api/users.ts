@@ -28,7 +28,6 @@ const postUsers = async (req, res) => {
     const insertResult = await db.collection("users").insertMany(body);
     res.end(JSON.stringify(insertResult));
   } catch (error) {
-    console.error(error);
     res.statusCode = 400;
     res.end(JSON.stringify(error));
   }
@@ -49,7 +48,6 @@ const deleteUsers = async (req, res) => {
     }
     res.end(JSON.stringify(deleteResult));
   } catch (error) {
-    console.error(error);
     res.statusCode = 400;
     res.end(JSON.stringify(error));
   }
