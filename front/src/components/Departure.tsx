@@ -14,8 +14,7 @@ const Row = styled.div`
   width: 100%;
 `;
 const HeadSign = styled.div`
-  ${props => `color:#${props.color};`};
-  font-weight: bold;
+  ${props => `color: ${props.color}`};
   width: 5em;
 `;
 const Time = styled.div`
