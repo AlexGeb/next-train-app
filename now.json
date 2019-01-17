@@ -13,7 +13,7 @@
     { "src": ".*", "dest": "/front/index.html" },
     { "src": "/img/(.*)", "dest": "/front/public/img/$1" }
   ],
-  "alias": ["next-train"],
+  "alias": ["next-ter"],
   "regions": ["bru1"],
   "env": {
     "MONGODB_ADDON_URI": "@mongodb_addon_uri"
