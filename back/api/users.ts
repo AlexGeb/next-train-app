@@ -1,12 +1,11 @@
-import { parse } from "url";
-import { ObjectID } from "mongodb";
-import { getDb } from "./utils/db";
-import { getJsonBody } from "./utils/requestHelper";
+import { ObjectID, DeleteWriteOpResultObject } from "mongodb";
+import { getDb } from "./util/db";
+import createApp from "./util/app";
+import { Response, Request } from "express";
 
-const getUsers = async (req, res) => {
+const getUsers = async (req: Request, res: Response) => {
   try {
-    const { query } = parse(req.url, true);
-    const { _id } = query;
+    const { _id } = req.query;
     const mongodbQuery =
       typeof _id === "string" ? { _id: new ObjectID(_id) } : {};
     const db = await getDb();
@@ -14,31 +13,29 @@ const getUsers = async (req, res) => {
       .collection("users")
       .find(mongodbQuery)
       .toArray();
-    res.end(JSON.stringify(users));
+    res.json(users);
   } catch (error) {
     res.statusCode = 400;
-    res.end(JSON.stringify({ error }));
+    res.json({ error });
   }
 };
 
-const postUsers = async (req, res) => {
+const postUsers = async (req: Request, res: Response) => {
   try {
-    const body: Object[] = await getJsonBody(req);
     const db = await getDb();
-    const insertResult = await db.collection("users").insertMany(body);
-    res.end(JSON.stringify(insertResult));
+    const insertResult = await db.collection("users").insertMany(req.body);
+    res.json(insertResult.insertedIds);
   } catch (error) {
     res.statusCode = 400;
-    res.end(JSON.stringify(error));
+    res.json(error);
   }
 };
 
-const deleteUsers = async (req, res) => {
+const deleteUsers = async (req: Request, res: Response) => {
   try {
     const db = await getDb();
-    const { query } = parse(req.url, true);
-    const { _id } = query;
-    let deleteResult;
+    const { _id } = req.query;
+    let deleteResult: DeleteWriteOpResultObject;
     if (typeof _id === "string") {
       deleteResult = await db
         .collection("users")
@@ -46,29 +43,22 @@ const deleteUsers = async (req, res) => {
     } else {
       deleteResult = await db.collection("users").deleteMany({});
     }
-    res.end(JSON.stringify(deleteResult));
+    res.json(deleteResult);
   } catch (error) {
     res.statusCode = 400;
-    res.end(JSON.stringify(error));
+    res.json(error);
   }
 };
 
-module.exports = (req, res) => {
-  res.setHeader("Content-Type", "application/json");
-  const { method } = req;
-  switch (method) {
-    case "GET":
-      getUsers(req, res);
-      break;
-    case "POST":
-      postUsers(req, res);
-      break;
-    case "DELETE":
-      deleteUsers(req, res);
-      break;
-    default:
-      res.statusCode = 405;
-      res.end();
-      break;
-  }
-};
+const app = createApp();
+app.get("*", (req, res) => {
+  getUsers(req, res);
+});
+app.post("*", (req, res) => {
+  postUsers(req, res);
+});
+app.delete("*", (req, res) => {
+  deleteUsers(req, res);
+});
+
+module.exports = app;

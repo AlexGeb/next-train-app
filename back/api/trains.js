@@ -8,50 +8,41 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const url_1 = require("url");
+const app_1 = require("./util/app");
 const sncf_1 = require("./services/sncf");
 const searchStation = (req, res) => __awaiter(this, void 0, void 0, function* () {
-    const { query } = url_1.parse(req.url, true);
-    const { q, stopAreaId } = query;
+    const { q, stopAreaId } = req.query;
     if (typeof q === "string") {
         try {
             const searchResults = yield sncf_1.getPossibleItems(q);
-            res.end(JSON.stringify(searchResults));
+            res.json(searchResults);
             return;
         }
         catch (error) {
             res.statusCode = 400;
-            res.end(JSON.stringify(error));
+            res.json(error);
             return;
         }
     }
     else if (typeof stopAreaId === "string") {
         try {
             const departures = yield sncf_1.getNextDepartures(stopAreaId);
-            res.end(JSON.stringify(departures));
+            res.json(departures);
         }
         catch (error) {
             res.statusCode = 400;
-            res.end(JSON.stringify(error));
+            res.json(error);
             return;
         }
     }
     else {
         res.statusCode = 400;
-        res.end(JSON.stringify({ error: "No query or stop area id specified" }));
+        res.json({ error: "No query or stop area id specified" });
         return;
     }
 });
-module.exports = (req, res) => __awaiter(this, void 0, void 0, function* () {
-    res.setHeader("Content-Type", "application/json");
-    const { method } = req;
-    switch (method) {
-        case "GET":
-            searchStation(req, res);
-            break;
-        default:
-            res.statusCode = 405;
-            res.end();
-            break;
-    }
+const app = app_1.default();
+app.get("*", (req, res) => {
+    searchStation(req, res);
 });
+module.exports = app;

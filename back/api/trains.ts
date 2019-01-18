@@ -1,46 +1,38 @@
-import { parse } from "url";
-import * as http from "http";
+import createApp from "./util/app";
 import { getPossibleItems, getNextDepartures } from "./services/sncf";
+import { Request, Response } from "express";
 
-const searchStation = async (req, res) => {
-  const { query } = parse(req.url, true);
-  const { q, stopAreaId } = query;
+const searchStation = async (req: Request, res: Response) => {
+  const { q, stopAreaId } = req.query;
   if (typeof q === "string") {
     try {
       const searchResults = await getPossibleItems(q);
-      res.end(JSON.stringify(searchResults));
+      res.json(searchResults);
       return;
     } catch (error) {
       res.statusCode = 400;
-      res.end(JSON.stringify(error));
+      res.json(error);
       return;
     }
   } else if (typeof stopAreaId === "string") {
     try {
       const departures = await getNextDepartures(stopAreaId);
-      res.end(JSON.stringify(departures));
+      res.json(departures);
     } catch (error) {
       res.statusCode = 400;
-      res.end(JSON.stringify(error));
+      res.json(error);
       return;
     }
   } else {
     res.statusCode = 400;
-    res.end(JSON.stringify({ error: "No query or stop area id specified" }));
+    res.json({ error: "No query or stop area id specified" });
     return;
   }
 };
 
-module.exports = async (req, res) => {
-  res.setHeader("Content-Type", "application/json");
-  const { method } = req;
-  switch (method) {
-    case "GET":
-      searchStation(req, res);
-      break;
-    default:
-      res.statusCode = 405;
-      res.end();
-      break;
-  }
-};
+const app = createApp();
+app.get("*", (req, res) => {
+  searchStation(req, res);
+});
+
+module.exports = app;
