@@ -1,14 +1,20 @@
 import React from 'react';
-import { Box } from '@smooth-ui/core-sc';
+import { Dimmer, Loader, Input, Menu, Container } from 'semantic-ui-react';
 
 import { SearchStations } from '../components/SearchStations';
 import { DepartureList } from '../components/DepartureList';
 
 const HomePage = () => (
-  <Box height="100vh" backgroundColor="rgb(238, 241, 245)">
-    <SearchStations />
-    <DepartureList />
-  </Box>
+  <div>
+    <Menu>
+      <Container>
+        <SearchStations />
+      </Container>
+    </Menu>
+    <Container>
+      <DepartureList />
+    </Container>
+  </div>
 );
 
 export default HomePage;

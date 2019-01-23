@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { observer, inject } from 'mobx-react';
-import { styled } from '@smooth-ui/core-sc';
+import styled from 'styled-components';
+import { Dimmer, Loader } from 'semantic-ui-react';
 
 import { Departure } from './Departure';
 import { Status } from '../enums';
@@ -12,6 +13,7 @@ type PropsType = {
 const ListWrapper = styled.div`
   display: flex;
   flex-direction: column;
+  height: 100%;
 `;
 
 @inject((rootStore: IRootStore) => ({
@@ -28,11 +30,11 @@ export class DepartureList extends Component<PropsType> {
     const { departureStore } = this.props;
     if (!departureStore) return null;
     const { departuresForUi, status } = departureStore;
-    if (status === Status.PENDING) {
-      return <div>loading..</div>;
-    }
     return (
       <ListWrapper>
+        <Dimmer active={false && status === Status.PENDING}>
+          <Loader />
+        </Dimmer>
         {departuresForUi.map((departure, index) => (
           <Departure key={index} index={index} departure={departure} />
         ))}

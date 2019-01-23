@@ -1,5 +1,5 @@
 import React from 'react';
-import { styled } from '@smooth-ui/core-sc';
+import styled from 'styled-components';
 
 import { styles } from '../styles';
 

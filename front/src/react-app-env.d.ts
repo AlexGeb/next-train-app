@@ -42,7 +42,7 @@ interface ISearchStationStore {
   error: string;
   query: string;
   results: ISearchResult[];
-  search: (query: string) => void;
+  search: (query?: string) => void;
   status: StatusType;
 }
 

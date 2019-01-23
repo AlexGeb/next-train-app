@@ -12,7 +12,7 @@ export class SearchStationStore implements ISearchStationStore {
   constructor(rootStore: IRootStore) {}
 
   search = flow(
-    function*(this: SearchStationStore, query: string) {
+    function*(this: SearchStationStore, query: string = '') {
       this.query = query;
       if (query.length < 3) return;
       this.status = Status.PENDING;

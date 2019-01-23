@@ -1,7 +1,15 @@
 import React, { Component } from 'react';
-import { Input, styled } from '@smooth-ui/core-sc';
 import { observer, inject } from 'mobx-react';
+import styled from 'styled-components';
 import Autocomplete from 'react-autocomplete';
+import {
+  Dimmer,
+  Loader,
+  Input,
+  Menu,
+  Search,
+  SearchResultProps,
+} from 'semantic-ui-react';
 
 import { styles } from '../styles';
 import { Status } from '../enums';
@@ -21,18 +29,8 @@ const Header = styled.div`
 `;
 
 const CustomInput = styled(Input)`
-  background-color: #f1f3f4;
-  border: none;
-  border-radius: 22px;
-  padding: 0px 14px;
   height: 35px;
   width: 560px;
-  &:hover {
-    background-color: rgb(232, 234, 237);
-  }
-  &:focus {
-    box-shadow: none;
-  }
 `;
 
 @inject((rootStore: IRootStore) => ({
@@ -41,18 +39,20 @@ const CustomInput = styled(Input)`
 }))
 @observer
 export class SearchStations extends Component<PropsType> {
-  renderItem = (item: ISearchResult, isHighlighted: boolean) => (
-    <div
-      key={item.id}
-      style={{ background: isHighlighted ? 'lightgray' : 'white' }}
-    >
-      {item.name}
-    </div>
-  );
-
-  renderInput = (props: React.HTMLProps<HTMLInputElement>) => (
-    <CustomInput {...props} placeholder="Rechercher une gare de départ" />
-  );
+  renderInput = ({ ref, ...inputProps }: React.HTMLProps<HTMLInputElement>) => {
+    const { searchStationStore } = this.props;
+    return (
+      <CustomInput
+        loading={
+          searchStationStore
+            ? searchStationStore.status === Status.PENDING
+            : false
+        }
+        {...inputProps}
+        placeholder="Rechercher une gare de départ"
+      />
+    );
+  };
 
   render() {
     const { searchStationStore, departureStore } = this.props;
@@ -60,25 +60,21 @@ export class SearchStations extends Component<PropsType> {
     const { results, query, search, status, error } = searchStationStore;
     const { select } = departureStore;
     let items = results.length > 0 ? results : [];
-    if (status === Status.PENDING) {
-      items = [{ name: 'loading...', id: '' }];
-    }
     if (status === Status.ERROR) {
       items = [{ name: error, id: '' }];
     }
     return (
-      <Header>
-        <Autocomplete
-          getItemValue={(item: ISearchResult) => item.name}
-          items={items}
-          renderItem={this.renderItem}
-          renderInput={this.renderInput}
-          value={query}
-          onChange={e => search(e.target.value)}
-          onSelect={(value, item: ISearchResult) => select(item)}
-          isItemSelectable={(item: ISearchResult) => item.id.length > 0}
-        />
-      </Header>
+      <Search
+        width={10}
+        loading={status === Status.PENDING}
+        results={items.map(({ name, id }) => ({
+          title: name,
+          id,
+        }))}
+        value={query}
+        onSearchChange={(e, { value }) => search(value)}
+        onResultSelect={(e, { result }) => select(result)}
+      />
     );
   }
 }
