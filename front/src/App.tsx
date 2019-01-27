@@ -1,9 +1,10 @@
 import React, { Component } from 'react';
 import { Provider } from 'mobx-react';
 import { configure } from 'mobx';
+import { Helmet } from 'react-helmet';
+import CssBaseline from '@material-ui/core/CssBaseline';
 import { locale } from 'moment';
 import 'moment/locale/fr';
-import 'semantic-ui-css/semantic.min.css';
 
 import { RootStore } from './store/rootStore';
 import HomePage from './pages/HomePage';
@@ -17,9 +18,18 @@ const rootStore = new RootStore();
 class App extends Component {
   render() {
     return (
-      <Provider {...rootStore}>
-        <HomePage />
-      </Provider>
+      <>
+        <Helmet>
+          <link
+            rel="stylesheet"
+            href="https://fonts.googleapis.com/css?family=Roboto:300,400,500"
+          />
+        </Helmet>
+        <CssBaseline />
+        <Provider {...rootStore}>
+          <HomePage />
+        </Provider>
+      </>
     );
   }
 }

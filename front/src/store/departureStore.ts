@@ -36,7 +36,7 @@ export class DepartureStore implements IDepartureStore {
   @observable status = Status.DONE;
   @observable error: string | null = null;
 
-  constructor(rootStore: IRootStore) {}
+  constructor(_: IRootStore) {}
 
   fetchDepartures = flow(
     function*(this: DepartureStore, stopAreaId: string) {
