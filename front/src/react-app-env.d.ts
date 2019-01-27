@@ -49,10 +49,11 @@ interface ISearchStationStore {
 interface IDepartureStore {
   departures: IDeparture[];
   departuresForUi: IDeparture[];
+  fetchDepartures: (stationId: string) => void;
+  select: (value: any) => void;
+  selectedResult?: ISearchResult;
   stationId: string;
   status: StatusType;
-  select: (value: any) => void;
-  fetchDepartures: (stationId: string) => void;
 }
 
 interface IRootStore {
