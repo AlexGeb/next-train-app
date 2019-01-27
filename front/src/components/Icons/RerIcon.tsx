@@ -24,7 +24,7 @@ const RerIcon = ({ label }: PropsType) => {
 export default ({ label }: PropsType) => {
   return (
     <Suspense fallback={<div>loading..</div>}>
-      <RerIcon label={'B'} />
+      <RerIcon label={label} />
     </Suspense>
   );
 };

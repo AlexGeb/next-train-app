@@ -1,10 +1,11 @@
 import React, { Component } from 'react';
 import { observer, inject } from 'mobx-react';
-import AsyncSelect from 'react-select/lib/Async';
+import Select from 'react-select';
 import { createStyles, withStyles } from '@material-ui/core/styles';
 import InputBase from '@material-ui/core/InputBase';
 
 import { Status } from '../enums';
+import { ActionMeta, ValueType } from 'react-select/lib/types';
 
 type PropsType = {
   searchStationStore?: ISearchStationStore;
@@ -30,8 +31,8 @@ const styles = theme =>
     },
   });
 
-const CustomInput = withStyles(styles)(
-  ({ classes, innerRef, ...otherProps }: any) => (
+const CustomInput: React.ComponentType<any> = withStyles(styles)(
+  ({ classes, innerRef, innerProps, ...otherProps }: any) => (
     <InputBase
       ref={innerRef}
       placeholder="Search…"
@@ -44,63 +45,56 @@ const CustomInput = withStyles(styles)(
   ),
 );
 
+const getOptionLabel = (option: ISearchResult) => option.name;
+const getOptionValue = (option: ISearchResult) => option.id;
+
 @inject((rootStore: IRootStore) => ({
   searchStationStore: rootStore.searchStationStore,
   departureStore: rootStore.departureStore,
 }))
 @observer
 export class SearchStations extends Component<PropsType> {
-  renderInput = ({ ref, ...inputProps }: React.HTMLProps<HTMLInputElement>) => {
-    const { searchStationStore } = this.props;
-    return null;
-    // <CustomInput
-    //   loading={
-    //     searchStationStore
-    //       ? searchStationStore.status === Status.PENDING
-    //       : false
-    //   }
-    //   {...inputProps}
-    //   placeholder="Rechercher une gare de départ"
-    // />
-  };
-  handleInputChange = (newValue: string) => {
+  handleInputChange = (query: string) => {
     const { searchStationStore } = this.props;
     if (!searchStationStore) return null;
     const { search } = searchStationStore;
-    console.log(newValue);
+    search(query);
+  };
 
-    search(newValue);
+  handleOnChange = (
+    newValue: ValueType<ISearchResult>,
+    actionMeta: ActionMeta,
+  ) => {
+    if (actionMeta.action === 'select-option') {
+      const { departureStore } = this.props;
+      if (!departureStore) return null;
+      const { select } = departureStore;
+      select(newValue);
+    }
   };
 
   render() {
     const { searchStationStore, departureStore } = this.props;
     if (!searchStationStore || !departureStore) return null;
-    const { results, query, search, status, error } = searchStationStore;
-    const { select } = departureStore;
+    const { selectedResult } = departureStore;
+    const { results, query, status, error } = searchStationStore;
     let items = results.length > 0 ? results : [];
     if (status === Status.ERROR) {
       items = [{ name: error, id: '' }];
     }
     return (
-      <AsyncSelect
-        cacheOptions
+      <Select
+        isLoading={status === Status.PENDING}
         inputValue={query}
         onInputChange={this.handleInputChange}
+        onChange={this.handleOnChange}
         components={{ Input: CustomInput }}
         options={items}
+        getOptionLabel={getOptionLabel}
+        getOptionValue={getOptionValue}
+        value={selectedResult}
       />
     );
-    // <Search
-    //   width={10}
-    //   loading={status === Status.PENDING}
-    //   results={items.map(({ name, id }) => ({
-    //     title: name,
-    //     id,
-    //   }))}
-    //   value={query}
-    //   onSearchChange={(e, { value }) => search(value)}
-    //   onResultSelect={(e, { result }) => select(result)}
-    // />
   }
 }
 
