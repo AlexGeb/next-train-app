@@ -77,7 +77,7 @@ const HomePage = ({ classes }) => (
         </div>
         <div className={classes.grow} />
         <IconButton color="inherit">
-          <AccountCircle />
+          <AccountCircle fontSize="large" />
         </IconButton>
       </Toolbar>
     </AppBar>
