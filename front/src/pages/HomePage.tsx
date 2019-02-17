@@ -9,7 +9,7 @@ import SearchIcon from '@material-ui/icons/Search';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 
-import { SearchStations } from '../components/SearchStations';
+import SearchStations from '../components/SearchStations';
 import { DepartureList } from '../components/DepartureList';
 
 const styles = theme =>

@@ -1,101 +1,88 @@
-import React, { Component } from 'react';
-import { observer, inject } from 'mobx-react';
+import React, { useContext, useState } from 'react';
 import Select from 'react-select';
-import { createStyles, withStyles } from '@material-ui/core/styles';
-import InputBase from '@material-ui/core/InputBase';
-
+import { withTheme, Theme } from '@material-ui/core/styles';
+import { Observer, useObservable } from 'mobx-react-lite';
+import { observable, flow } from 'mobx';
+import { DepartureStore } from '../store/departureStore';
+import StoreContext from '../store';
 import { Status } from '../enums';
+import request from '../services/request';
 import { ActionMeta, ValueType } from 'react-select/lib/types';
+import moment from 'moment';
 
 type PropsType = {
   searchStationStore?: ISearchStationStore;
   departureStore?: IDepartureStore;
+  theme: Theme;
 };
 
-const styles = theme =>
-  createStyles({
-    inputRoot: {
+const getOptionLabel = (option: ISearchResult) => option.name;
+const getOptionValue = (option: ISearchResult) => option.id;
+
+const SearchStations = (props: PropsType) => {
+  const { theme } = props;
+  const {
+    departureStore: { selectedResult, select },
+    searchStationStore: { results, status, error, search },
+  } = useContext(StoreContext);
+  const [query, setQuery] = useState('');
+
+  let items = results.length > 0 ? results : [];
+  if (status === Status.ERROR) {
+    items = [{ name: error, id: '' }];
+  }
+
+  const handleInputChange = (query: string) => {
+    console.log('handleInputChange', query);
+    setQuery(query);
+    
+    search(query);
+  };
+
+  const handleOnChange = (
+    newValue: ValueType<ISearchResult>,
+    actionMeta: ActionMeta,
+  ) => {
+    if (actionMeta.action === 'select-option') {
+      if (newValue && !Array.isArray(newValue)) {
+        select(newValue);
+      }
+    }
+  };
+
+  const selectStyles = {
+    input: (provided, state) => ({
+      ...provided,
       color: 'inherit',
       width: '100%',
-    },
-    inputInput: {
       paddingTop: theme.spacing.unit,
       paddingRight: theme.spacing.unit,
       paddingBottom: theme.spacing.unit,
       paddingLeft: theme.spacing.unit * 10,
       transition: theme.transitions.create('width'),
-      width: '100%',
       [theme.breakpoints.up('md')]: {
         width: 200,
       },
-    },
-  });
-
-const CustomInput: React.ComponentType<any> = withStyles(styles)(
-  ({ classes, innerRef, innerProps, ...otherProps }: any) => (
-    <InputBase
-      ref={innerRef}
-      placeholder="Search…"
-      classes={{
-        root: classes.inputRoot,
-        input: classes.inputInput,
-      }}
-      {...otherProps}
-    />
-  ),
-);
-
-const getOptionLabel = (option: ISearchResult) => option.name;
-const getOptionValue = (option: ISearchResult) => option.id;
-
-@inject((rootStore: IRootStore) => ({
-  searchStationStore: rootStore.searchStationStore,
-  departureStore: rootStore.departureStore,
-}))
-@observer
-export class SearchStations extends Component<PropsType> {
-  handleInputChange = (query: string) => {
-    const { searchStationStore } = this.props;
-    if (!searchStationStore) return null;
-    const { search } = searchStationStore;
-    search(query);
+    }),
   };
 
-  handleOnChange = (
-    newValue: ValueType<ISearchResult>,
-    actionMeta: ActionMeta,
-  ) => {
-    if (actionMeta.action === 'select-option') {
-      const { departureStore } = this.props;
-      if (!departureStore) return null;
-      const { select } = departureStore;
-      select(newValue);
-    }
-  };
+  return (
+    <Observer>
+      {() => (
+        <Select
+          styles={selectStyles}
+          isLoading={status === Status.PENDING}
+          inputValue={query}
+          onInputChange={handleInputChange}
+          onChange={handleOnChange}
+          options={items}
+          getOptionLabel={getOptionLabel}
+          getOptionValue={getOptionValue}
+          value={selectedResult}
+        />
+      )}
+    </Observer>
+  );
+};
 
-  render() {
-    const { searchStationStore, departureStore } = this.props;
-    if (!searchStationStore || !departureStore) return null;
-    const { selectedResult } = departureStore;
-    const { results, query, status, error } = searchStationStore;
-    let items = results.length > 0 ? results : [];
-    if (status === Status.ERROR) {
-      items = [{ name: error, id: '' }];
-    }
-    return (
-      <Select
-        isLoading={status === Status.PENDING}
-        inputValue={query}
-        onInputChange={this.handleInputChange}
-        onChange={this.handleOnChange}
-        components={{ Input: CustomInput }}
-        options={items}
-        getOptionLabel={getOptionLabel}
-        getOptionValue={getOptionValue}
-        value={selectedResult}
-      />
-    );
-  }
-}
-
-export default SearchStations;
+export default withTheme()(SearchStations);

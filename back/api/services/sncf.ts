@@ -1,7 +1,7 @@
-import * as superagent from "superagent";
+import * as superagent from 'superagent';
 
-const ENPOINT = "https://api.sncf.com/v1/coverage/fr-idf";
-const TOKEN_KEY = "88ebd821-f0c3-4492-aefa-26d10267f0d1";
+const ENPOINT = 'https://api.sncf.com/v1/coverage/fr-idf';
+const TOKEN_KEY = '88ebd821-f0c3-4492-aefa-26d10267f0d1';
 const headers = { Authorization: TOKEN_KEY };
 
 const handleResponse = (resp: superagent.Response): any => {
@@ -28,13 +28,13 @@ export const getPossibleItems = (partialValue: string): Promise<IResult[]> => {
 
 export const getNextDepartures = (stopAreaId: string): Promise<any> => {
   const forbiddenUris = `forbidden_uris[]=${[
-    "physical_mode:Bus",
-    "physical_mode:Metro"
-  ].join("&forbidden_uris[]=")}`;
+    'physical_mode:Bus',
+    'physical_mode:Metro'
+  ].join('&forbidden_uris[]=')}`;
 
   return superagent
     .get(
-      `${ENPOINT}/stop_areas/${stopAreaId}/departures?data_freshness=realtime&disable_geojson=true&${forbiddenUris}`
+      `${ENPOINT}/stop_areas/${stopAreaId}/departures?data_freshness=realtime&disable_geojson=true`
     )
     .set(headers)
     .then(handleResponse)

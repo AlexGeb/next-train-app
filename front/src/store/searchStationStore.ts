@@ -5,7 +5,6 @@ import request from '../services/request';
 
 export class SearchStationStore implements ISearchStationStore {
   @observable results: ISearchResult[] = [];
-  @observable query: string = '';
   @observable status: StatusType = Status.DONE;
   @observable error: string = '';
 
@@ -13,7 +12,6 @@ export class SearchStationStore implements ISearchStationStore {
 
   search = flow(
     function*(this: SearchStationStore, query: string = '') {
-      this.query = query;
       if (query.length < 3) return;
       this.status = Status.PENDING;
       try {
